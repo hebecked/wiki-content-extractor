@@ -13,17 +13,17 @@ parser.add_argument('-p', '--pagename', dest='PAGENAME', default='Leitbild', act
 args = parser.parse_args()
 
 def geturl(givenName):
-	if validators.url():
-		url, page = string.rsplit(args.PAGENAME, '/', maxsplit=1)
-		pagename=url + '/Spezial:Exportieren/' + page
+	if validators.url(givenName):
+		url, page = string.rsplit(givenName, '/', maxsplit=1)
+		pagename = url + '/Spezial:Exportieren/' + page
 	else:
-		pagename = 'https://wiki.diehumanisten.de/wiki/index.php/Spezial:Exportieren/' + args.PAGENAME
+		pagename = 'https://wiki.diehumanisten.de/wiki/index.php/Spezial:Exportieren/' + givenName
 	if not validators.url(pagename):
 		raise Exception("This is not a valid url: " + pagename )
 	return pagename
 
 def getxmldict(url):
-	xml_request = requests.get(pagename)
+	xml_request = requests.get(url)
 	if not xml_request.status_code == 200:
 		raise Exception("Bad status code" + str(xml_request.status_code) )
 	xml = xmltodict.parse(xml_request.text)
@@ -34,6 +34,5 @@ def getContent(xmlDict):
 
 url = geturl(args.PAGENAME)
 xmlDict = getxmldict(url)
-content = getContent(xmlDict)
 content = getContent(xmlDict)
 print content
